@@ -1,6 +1,13 @@
 <nav>
-    <a href="/">Home</a>
-    <a href="/auth/sign-in">Sign In</a>
-    <a href="/auth/sign-up">Sign Up</a>
-    <a href="/auth/sign-out">Sign Out</a>
+    <% if(user) { %>
+        <strong>Welcome, <%= user.username %>!</strong>
+        <a href="/">Home</a>
+        <a href="/auth/sign-out">Sign Out</a>
+    <% } else { %>
+        <a href="/auth/sign-up">Sign Up</a>
+        <a href="/auth/sign-in">Sign In</a>
+            <% } %>
+    
+    
+    
 </nav>

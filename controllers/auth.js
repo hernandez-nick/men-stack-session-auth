@@ -45,17 +45,41 @@ router.post("/sign-in", async (req, res) => {
     try {
         const foundUser = await User.findOne({ username });
         if (!foundUser) {
-            throw new Error(`User with the username ${username} does not exist. Please sign up first.`);
+            throw new Error(
+            `User with the username ${username} does not exist. Please sign up first.`,
+            );
         }
-        const isValidPassword = bcrypt.compareSync(password, foundUser.hashedPassword);
+        const isValidPassword = bcrypt.compareSync(
+            password,
+            foundUser.hashedPassword,
+        );
         if (!isValidPassword) {
             throw new Error("Invalid username or password. Please try again.");
         }
-        res.status(200).json(foundUser).send("Welcome in!");
-        
+
+        // Handle actually signing in the user
+        // add the users name and id onto the session
+        req.session.user = {
+            _id: foundUser._id,
+            username: foundUser.username,
+        };
+
+        // save the session to mongodb
+        req.session.save(() => {
+            res.redirect("/");
+        });
+
+
     } catch (error) {
         res.render("auth/sign-in.ejs", { message: error.message });
     }
+});
+
+
+router.get("/sign-out", (req, res) => {
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
 });
 
 module.exports = router;
