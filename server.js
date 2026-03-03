@@ -12,7 +12,7 @@ const userController = require("./controllers/user.js");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const verifyUserAuth = require("./middleware/isUserAuthorized.js");
+const authRequired = require("./middleware/isUserAuthorized.js");
 const passDataToView = require("./middleware/passDataToView.js");
 
 // Connect to MongoDB
@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authController);
 
 // Any routes that come after this middleware will require the user to be authenticated
-app.use(verifyUserAuth);
+app.use(authRequired);
 app.use("/users", userController);
 
 app.listen(PORT, () => {
